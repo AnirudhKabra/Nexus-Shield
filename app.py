@@ -234,4 +234,5 @@ def all_users():
 #       App Entry Point         #
 # ----------------------------- #
 if __name__ == '__main__':
-    app.run(host='0.0.0.0')
+    app.run(host='0.0.0.0') # For production use
+    # app.run(debug=True) # For development purposes only

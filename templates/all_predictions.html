@@ -232,18 +232,18 @@
         }
         
         .table tbody tr::before {
-            content: "";
-            position: absolute;
+            /* content: ""; */
+            /* position: absolute;
             left: 0;
             top: 0;
             bottom: 0;
             width: 4px;
             background: transparent;
-            transition: all 0.3s;
+            transition: all 0.3s; */
         }
         
         .table tbody tr:hover {
-            background: var(--table-row-hover);
+            background: transparent;
             transform: translateX(5px);
         }
         
@@ -351,6 +351,8 @@
             0%, 100% { opacity: 1; }
             50% { opacity: 0.5; }
         }
+
+        
     </style>
 </head>
 <body>
