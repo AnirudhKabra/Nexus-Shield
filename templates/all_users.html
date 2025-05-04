@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>All Users</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(to right, #dfe9f3, #ffffff);
+            font-family: 'Segoe UI', sans-serif;
+            padding: 50px 20px;
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 0 25px rgba(0, 0, 0, 0.08);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #2c3e50;
+        }
+
+        .table th {
+            background-color: #5564eb;
+            color: white;
+        }
+
+        .table-hover tbody tr:hover {
+            background-color: #f2f7ff;
+        }
+
+        .icon {
+            color: #5564eb;
+            font-size: 28px;
+            margin-right: 10px;
+        }
+
+        .title {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @media (max-width: 576px) {
+            .table th, .table td {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="title">
+        <i class="fas fa-users-cog icon"></i>
+        <h2>All Users</h2>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover text-center align-middle">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>👤 Username</th>
+                    <th>🛡️ Is Admin</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user[0] }}</td>
+                    <td>{{ user[1] }}</td>
+                    <td>
+                        {% if user[2] %}
+                            <span class="badge bg-success">Yes</span>
+                        {% else %}
+                            <span class="badge bg-secondary">No</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+</body>
+</html>
