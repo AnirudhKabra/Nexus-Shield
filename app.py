@@ -139,7 +139,7 @@ def predict():
 
     try:
         prediction = model.predict([[hash_len, time]])[0]
-        label = "Malware" if prediction == 1 else "Not Malware"
+        label = "Malware" if prediction == 1 else "Clean"
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
@@ -234,4 +234,4 @@ def all_users():
 #       App Entry Point         #
 # ----------------------------- #
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0')

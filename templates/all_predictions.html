@@ -2,96 +2,421 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>All Malware Predictions</title>
+    <title>Threat Analytics | Nexus Shield</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;700&family=Roboto+Mono:wght@400;500&display=swap');
+        
+        :root {
+            --primary: #00f7ff;
+            --secondary: #0059ff;
+            --accent: #ff00e6;
+            --dark: #0a0e17;
+            --darker: #060a11;
+            --light: #e6f4ff;
+            --terminal-bg: rgba(3, 14, 27, 0.9);
+            --success: #4eff8a;
+            --danger: #ff3e3e;
+            --table-bg: rgba(6, 16, 32, 0.6);
+            --table-row-hover: rgba(0, 247, 255, 0.1);
+        }
+        
         body {
-            background: linear-gradient(to right, #e0eafc, #cfdef3);
-            font-family: 'Segoe UI', sans-serif;
-            padding-top: 60px;
+            background-color: var(--dark);
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(0, 247, 255, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 75% 75%, rgba(255, 0, 230, 0.1) 0%, transparent 40%);
+            min-height: 100vh;
+            font-family: 'Roboto', sans-serif;
+            color: var(--light);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow-x: hidden;
         }
-
+        
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%231f61ff' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .navbar {
+            background: rgba(10, 14, 23, 0.9) !important;
+            border-bottom: 1px solid var(--primary);
+            padding: 0.8rem 1.5rem;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 5px 20px rgba(0, 247, 255, 0.15);
+        }
+        
+        .navbar-brand {
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
+            font-weight: 700;
+            color: var(--primary) !important;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s;
+        }
+        
+        .navbar-brand:hover {
+            text-shadow: 0 0 8px var(--primary);
+            transform: translateX(-5px);
+        }
+        
+        .navbar-brand i {
+            margin-right: 8px;
+            font-size: 1.2rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            padding: 40px 20px;
+        }
+        
         .table-container {
-            background-color: white;
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0px 0px 30px rgba(0,0,0,0.1);
-            transition: transform 0.3s ease;
+            background: var(--terminal-bg);
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 0 40px rgba(0, 247, 255, 0.15),
+                        inset 0 0 3px var(--primary);
+            border: 1px solid rgba(0, 247, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+        
+        .table-container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--accent), var(--primary));
+            z-index: 1;
+        }
+        
+        .scan-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+            animation: scanline 5s linear infinite;
+            opacity: 0.7;
+            z-index: 0;
         }
 
-        .table-container:hover {
-            transform: scale(1.01);
+        @keyframes scanline {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(850px); }
         }
-
+        
         h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), #ffffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 2px;
             text-align: center;
-            font-weight: bold;
-            color: #2c3e50;
-            margin-bottom: 30px;
+            margin-bottom: 0;
         }
-
-        .table th {
-            background: #4b6cb7;
-            color: white;
-            vertical-align: middle;
-        }
-
-        .table td {
-            background-color: #f9fbfd;
-        }
-
-        .table-hover tbody tr:hover {
-            background-color: #edf3ff;
-        }
-
-        .icon {
-            font-size: 28px;
-            color: #4b6cb7;
-            margin-right: 10px;
-        }
-
+        
         .title-bar {
             display: flex;
             align-items: center;
             justify-content: center;
+            margin-bottom: 30px;
+            position: relative;
+            padding-bottom: 15px;
+        }
+        
+        .title-bar::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 200px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+            transform: translateX(-50%);
+        }
+        
+        .icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-right: 15px;
+            text-shadow: 0 0 10px var(--primary);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        .table {
+            border: 1px solid rgba(0, 247, 255, 0.2);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-top: 1rem;
+            color: var(--light);
+            background: var(--table-bg);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.3), inset 0 0 1px var(--primary);
+        }
+        
+        .table thead {
+            background: linear-gradient(90deg, rgba(3, 14, 27, 0.95), rgba(6, 16, 32, 0.9));
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.85rem;
+            border-bottom: 2px solid rgba(0, 247, 255, 0.3);
+        }
+        
+        .table th {
+            border-color: transparent;
+            padding: 15px;
+            font-weight: 600;
+            vertical-align: middle;
+            text-shadow: 0 0 5px rgba(0, 247, 255, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .table th::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+        }
+        
+        .table th i {
+            color: var(--primary);
+            margin-right: 5px;
+        }
+        
+        .table td {
+            border-color: rgba(0, 247, 255, 0.05);
+            padding: 15px;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 0.9rem;
+            vertical-align: middle;
+        }
+        
+        .table tbody tr {
+            background-color: transparent;
+            position: relative;
+            transition: all 0.3s;
+            border-bottom: 1px solid rgba(0, 247, 255, 0.05);
+        }
+        
+        .table tbody tr:last-child {
+            border-bottom: none;
+        }
+        
+        .table tbody tr::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: transparent;
+            transition: all 0.3s;
+        }
+        
+        .table tbody tr:hover {
+            background: var(--table-row-hover);
+            transform: translateX(5px);
+        }
+        
+        .table tbody tr:hover::before {
+            background: var(--primary);
+            box-shadow: 0 0 15px var(--primary);
+        }
+        
+        .table tr:nth-child(odd) {
+            background-color: rgba(0, 40, 60, 0.08);
+        }
+        
+        .prediction-clean {
+            color: var(--success);
+            text-shadow: 0 0 10px var(--success);
+            font-weight: 500;
+        }
+        
+        .prediction-malware {
+            color: var(--danger);
+            text-shadow: 0 0 10px var(--danger);
+            font-weight: 500;
+        }
+        
+        .hash-cell {
+            font-family: 'Roboto Mono', monospace;
+            max-width: 150px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .btn-back {
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            background: transparent;
+            transition: all 0.3s;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 500;
+            padding: 8px 20px;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            margin-top: 20px;
+        }
+        
+        .btn-back i {
+            margin-right: 8px;
+        }
+        
+        .btn-back:hover {
+            background-color: var(--primary);
+            color: var(--dark);
+            box-shadow: 0 0 15px rgba(0, 247, 255, 0.4);
+        }
+        
+        .stats-bar {
+            display: flex;
+            justify-content: space-between;
             margin-bottom: 20px;
         }
-
-        @media (max-width: 576px) {
+        
+        .stats-item {
+            background: rgba(10, 18, 30, 0.7);
+            border: 1px solid rgba(0, 247, 255, 0.3);
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            min-width: 150px;
+            justify-content: center;
+        }
+        
+        .stats-item i {
+            margin-right: 8px;
+            color: var(--primary);
+        }
+        
+        @media (max-width: 767px) {
+            .stats-bar {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .stats-item {
+                width: 100%;
+            }
+            
             .table-container {
                 padding: 20px 10px;
             }
-            .table th, .table td {
-                font-size: 14px;
-            }
+        }
+        
+        .data-loading {
+            text-align: center;
+            padding: 40px 0;
+            font-family: 'Orbitron', sans-serif;
+            color: var(--primary);
+            animation: blink 1.5s infinite;
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
         }
     </style>
 </head>
 <body>
 
+<!-- Top Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark px-4">
+    <a class="navbar-brand" href="/">
+        <i class="fas fa-shield-alt"></i> NEXUS SHIELD
+    </a>
+    <div class="ms-auto">
+        <a href="/scan" class="btn-back">
+            <i class="fas fa-arrow-left"></i> Return to Command Center
+        </a>
+    </div>
+</nav>
+
 <div class="container">
     <div class="table-container">
+        <div class="scan-line"></div>
+        
         <div class="title-bar">
-            <i class="fas fa-shield-virus icon"></i>
-            <h2>All Malware Predictions</h2>
+            <i class="fas fa-biohazard icon"></i>
+            <h2>THREAT INTELLIGENCE DATABASE</h2>
         </div>
+        
+        <div class="stats-bar">
+            <div class="stats-item">
+                <i class="fas fa-database"></i>
+                <span id="totalEntries">0 ENTRIES</span>
+            </div>
+            <div class="stats-item">
+                <i class="fas fa-virus"></i>
+                <span id="malwareCount">0 THREATS</span>
+            </div>
+            <div class="stats-item">
+                <i class="fas fa-shield-check"></i>
+                <span id="cleanCount">0 CLEAN</span>
+            </div>
+        </div>
+        
         <div class="table-responsive">
-            <table class="table table-bordered table-hover align-middle text-center">
+            <table class="table table-borderless table-hover align-middle text-center">
                 <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>👤 User</th>
-                        <th>🔐 Hash</th>
-                        <th>⏰ Time</th>
-                        <th>📏 Hash Length</th>
-                        <th>🧠 Prediction</th>
+                        <th><i class="fas fa-fingerprint"></i> ID</th>
+                        <th><i class="fas fa-user-shield"></i> USER</th>
+                        <th><i class="fas fa-hashtag"></i> SIGNATURE</th>
+                        <th><i class="fas fa-clock"></i> TIMESTAMP</th>
+                        <th><i class="fas fa-ruler"></i> LENGTH</th>
+                        <th><i class="fas fa-brain"></i> ANALYSIS</th>
                     </tr>
                 </thead>
                 <tbody id="predictionsTableBody">
-                    <!-- Dynamically inserted rows -->
+                    <tr>
+                        <td colspan="6" class="data-loading">
+                            <i class="fas fa-spinner fa-spin me-2"></i> INITIALIZING DATABASE CONNECTION...
+                        </td>
+                    </tr>
                 </tbody>
             </table>
+        </div>
+        
+        <div class="d-flex justify-content-end mt-4">
+            <a href="javascript:void(0)" onclick="fetchPredictions()" class="btn-back">
+                <i class="fas fa-sync"></i> Refresh Data
+            </a>
         </div>
     </div>
 </div>
@@ -99,21 +424,79 @@
 <script>
     async function fetchPredictions() {
         try {
+            document.getElementById('predictionsTableBody').innerHTML = `
+                <tr>
+                    <td colspan="6" class="data-loading">
+                        <i class="fas fa-spinner fa-spin me-2"></i> ANALYZING DATABASE...
+                    </td>
+                </tr>
+            `;
+            
             const response = await fetch('/all');
             const data = await response.json();
             const tbody = document.getElementById('predictionsTableBody');
             tbody.innerHTML = '';
+            
+            let malwareCount = 0;
+            let cleanCount = 0;
 
             data.forEach(row => {
                 const tr = document.createElement('tr');
-                row.forEach(cell => {
-                    const td = document.createElement('td');
-                    td.textContent = cell;
-                    tr.appendChild(td);
-                });
+                
+                // ID cell
+                const idCell = document.createElement('td');
+                idCell.textContent = row[0];
+                tr.appendChild(idCell);
+                
+                // User cell
+                const userCell = document.createElement('td');
+                userCell.textContent = row[1];
+                tr.appendChild(userCell);
+                
+                // Hash cell with truncation
+                const hashCell = document.createElement('td');
+                hashCell.className = 'hash-cell';
+                hashCell.textContent = row[2];
+                hashCell.title = row[2]; // full hash on hover
+                tr.appendChild(hashCell);
+                
+                // Time cell
+                const timeCell = document.createElement('td');
+                timeCell.textContent = row[3];
+                tr.appendChild(timeCell);
+                
+                // Length cell
+                const lengthCell = document.createElement('td');
+                lengthCell.textContent = row[4];
+                tr.appendChild(lengthCell);
+                
+                // Prediction cell with styling
+                const predictionCell = document.createElement('td');
+                if (row[5].toLowerCase().includes('malware')) {
+                    predictionCell.innerHTML = `<i class="fas fa-exclamation-triangle me-2"></i> <span class="prediction-malware">${row[5]}</span>`;
+                    malwareCount++;
+                } else {
+                    predictionCell.innerHTML = `<i class="fas fa-check-circle me-2"></i> <span class="prediction-clean">${row[5]}</span>`;
+                    cleanCount++;
+                }
+                tr.appendChild(predictionCell);
+                
                 tbody.appendChild(tr);
             });
+            
+            // Update statistics
+            document.getElementById('totalEntries').textContent = `${data.length} ENTRIES`;
+            document.getElementById('malwareCount').textContent = `${malwareCount} THREATS`;
+            document.getElementById('cleanCount').textContent = `${cleanCount} CLEAN`;
+            
         } catch (error) {
+            document.getElementById('predictionsTableBody').innerHTML = `
+                <tr>
+                    <td colspan="6" class="text-center text-danger">
+                        <i class="fas fa-exclamation-circle me-2"></i> CONNECTION ERROR: UNABLE TO ACCESS DATABASE
+                    </td>
+                </tr>
+            `;
             console.error('Failed to load predictions:', error);
         }
     }

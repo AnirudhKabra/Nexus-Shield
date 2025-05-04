@@ -2,91 +2,340 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>All Users</title>
+    <title>System Users | Nexus Shield</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;700&family=Roboto+Mono:wght@400;500&display=swap');
+        
+        :root {
+            --primary: #00f7ff;
+            --secondary: #0059ff;
+            --accent: #ff00e6;
+            --dark: #0a0e17;
+            --light: #e6f4ff;
+            --terminal-bg: rgba(3, 14, 27, 0.9);
+            --success: #4eff8a;
+            --danger: #ff3e3e;
+        }
+        
         body {
-            background: linear-gradient(to right, #dfe9f3, #ffffff);
-            font-family: 'Segoe UI', sans-serif;
-            padding: 50px 20px;
+            background-color: var(--dark);
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(0, 247, 255, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 75% 75%, rgba(255, 0, 230, 0.1) 0%, transparent 40%);
+            min-height: 100vh;
+            font-family: 'Roboto', sans-serif;
+            color: var(--light);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow-x: hidden;
         }
-
+        
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%231f61ff' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .navbar {
+            background: rgba(10, 14, 23, 0.9) !important;
+            border-bottom: 1px solid var(--primary);
+            padding: 0.8rem 1.5rem;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 5px 20px rgba(0, 247, 255, 0.15);
+        }
+        
+        .navbar-brand {
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
+            font-weight: 700;
+            color: var(--primary) !important;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s;
+        }
+        
+        .navbar-brand:hover {
+            text-shadow: 0 0 8px var(--primary);
+            transform: translateX(-5px);
+        }
+        
         .container {
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 0 25px rgba(0, 0, 0, 0.08);
+            max-width: 1000px;
+            background: var(--terminal-bg);
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 0 40px rgba(0, 247, 255, 0.15),
+                        inset 0 0 3px var(--primary);
+            margin-top: 40px;
+            margin-bottom: 50px;
+            border: 1px solid rgba(0, 247, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--accent), var(--primary));
+            z-index: 1;
+        }
+        
+        .scan-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+            animation: scanline 4s linear infinite;
+            opacity: 0.7;
+            z-index: 0;
         }
 
+        @keyframes scanline {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(850px); }
+        }
+        
         h2 {
-            text-align: center;
-            margin-bottom: 30px;
-            color: #2c3e50;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), #ffffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 2px;
+            position: relative;
+            display: inline-block;
+            margin-bottom: 2rem;
+            padding-bottom: 10px;
         }
-
-        .table th {
-            background-color: #5564eb;
+        
+        h2::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 80%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), transparent);
+            border-radius: 3px;
+        }
+        
+        .table {
+            border: 1px solid rgba(0, 247, 255, 0.2);
+            border-radius: 8px;
+            overflow: hidden;
+            margin-top: 2rem;
+            color: var(--light);
+            background: rgba(10, 18, 30, 0.3);
+            backdrop-filter: blur(10px);
+        }
+        
+        .table thead {
+            background: linear-gradient(90deg, rgba(0, 89, 255, 0.2), rgba(0, 247, 255, 0.3));
             color: white;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
         }
-
-        .table-hover tbody tr:hover {
-            background-color: #f2f7ff;
+        
+        .table th {
+            border-color: rgba(0, 247, 255, 0.2);
+            padding: 12px 15px;
+            font-weight: 600;
+            vertical-align: middle;
         }
-
-        .icon {
-            color: #5564eb;
-            font-size: 28px;
-            margin-right: 10px;
+        
+        .table td {
+            border-color: rgba(0, 247, 255, 0.1);
+            padding: 12px 15px;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 0.9rem;
+            vertical-align: middle;
         }
-
+        
+        .table tr:nth-child(odd) {
+            background-color: rgba(0, 247, 255, 0.03);
+        }
+        
+        .table tr {
+            transition: all 0.3s;
+        }
+        
+        .table tr:hover {
+            background-color: rgba(0, 247, 255, 0.1);
+            transform: translateX(5px);
+        }
+        
+        .table td:first-child {
+            border-left: 3px solid transparent;
+        }
+        
+        .table tr:hover td:first-child {
+            border-left: 3px solid var(--primary);
+        }
+        
+        .badge-admin {
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
+            border: none;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.7rem;
+            letter-spacing: 1px;
+            padding: 5px 10px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 247, 255, 0.3);
+        }
+        
+        .badge-user {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.7rem;
+            letter-spacing: 1px;
+            padding: 5px 10px;
+            border-radius: 8px;
+        }
+        
         .title {
             display: flex;
             align-items: center;
-            justify-content: center;
+            margin-bottom: 1.5rem;
         }
-
-        @media (max-width: 576px) {
-            .table th, .table td {
-                font-size: 14px;
-            }
+        
+        .icon {
+            color: var(--primary);
+            font-size: 2rem;
+            margin-right: 15px;
+            text-shadow: 0 0 10px var(--primary);
+        }
+        
+        .user-count {
+            position: absolute;
+            right: 40px;
+            top: 40px;
+            background: rgba(10, 18, 30, 0.7);
+            border: 1px solid rgba(0, 247, 255, 0.3);
+            padding: 8px 15px;
+            border-radius: 30px;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-count i {
+            margin-right: 8px;
+            color: var(--primary);
+        }
+        
+        .btn-back {
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            background: transparent;
+            transition: all 0.3s;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 500;
+            padding: 8px 20px;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            margin-top: 20px;
+        }
+        
+        .btn-back i {
+            margin-right: 8px;
+        }
+        
+        .btn-back:hover {
+            background-color: var(--primary);
+            color: var(--dark);
+            box-shadow: 0 0 15px rgba(0, 247, 255, 0.4);
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        .pulse-icon {
+            animation: pulse 2s infinite;
         }
     </style>
 </head>
 <body>
+    <!-- Top Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark px-4">
+        <a class="navbar-brand" href="/">
+            <i class="fas fa-shield-alt me-2"></i> NEXUS SHIELD
+        </a>
+        <div class="ms-auto">
+            <a href="/scan" class="btn-back">
+                <i class="fas fa-arrow-left"></i> Return to Command Center
+            </a>
+        </div>
+    </nav>
 
-<div class="container">
-    <div class="title">
-        <i class="fas fa-users-cog icon"></i>
-        <h2>All Users</h2>
+    <div class="container">
+        <div class="scan-line"></div>
+        
+        <div class="user-count">
+            <i class="fas fa-users-cog"></i> {{ users|length }} USERS REGISTERED
+        </div>
+        
+        <div class="title">
+            <i class="fas fa-server icon pulse-icon"></i>
+            <h2>SYSTEM ACCESS CONTROL</h2>
+        </div>
+        
+        <div class="table-responsive">
+            <table class="table table-hover text-center align-middle">
+                <thead>
+                    <tr>
+                        <th><i class="fas fa-fingerprint me-2"></i>ID</th>
+                        <th><i class="fas fa-user-shield me-2"></i>IDENTITY CODE</th>
+                        <th><i class="fas fa-user-lock me-2"></i>CLEARANCE LEVEL</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td>{{ user[0] }}</td>
+                        <td>{{ user[1] }}</td>
+                        <td>
+                            {% if user[2] %}
+                                <span class="badge badge-admin">ADMINISTRATOR</span>
+                            {% else %}
+                                <span class="badge badge-user">STANDARD</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="d-flex justify-content-end mt-4">
+            <a href="/all_users" class="btn-back">
+                <i class="fas fa-sync"></i> Refresh Database
+            </a>
+        </div>
     </div>
-    <div class="table-responsive">
-        <table class="table table-bordered table-hover text-center align-middle">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>👤 Username</th>
-                    <th>🛡️ Is Admin</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for user in users %}
-                <tr>
-                    <td>{{ user[0] }}</td>
-                    <td>{{ user[1] }}</td>
-                    <td>
-                        {% if user[2] %}
-                            <span class="badge bg-success">Yes</span>
-                        {% else %}
-                            <span class="badge bg-secondary">No</span>
-                        {% endif %}
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-</div>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
