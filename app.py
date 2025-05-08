@@ -1,4 +1,3 @@
-import hashlib
 from flask import Flask, request, jsonify, render_template, redirect, url_for, session
 from werkzeug.security import generate_password_hash, check_password_hash
 import joblib
@@ -114,34 +113,7 @@ def signup():
 
     return render_template('signup.html')
 
-@app.route('/upload/file', methods=['POST'])
-def upload_file():
-    if 'username' not in session:
-        return redirect(url_for('login'))
 
-    try:
-        file = request.files.get('file')
-        if not file:
-            return "No file selected", 400
-
-        # Calculate hash of the file
-        file_content = file.read()
-        file_hash = hashlib.sha256(file_content).hexdigest()
-
-        # Create the JSON object with hash and epoch time
-        import time
-        payload = {
-            "hash": file_hash,
-            "time": str(int(time.time()))
-        }
-
-        # Send POST request to /predict with the payload
-        response = app.test_client().post('/predict', json=payload)
-        return response
-
-    except Exception as e:
-        print(f"Error processing file upload: {e}")
-        return f"Internal Server Error: {e}", 500
 
 @app.route('/scan')
 def dashboard():
