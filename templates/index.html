@@ -393,30 +393,56 @@
         </div>
     </div>
 
-    <!-- Prediction Form -->
-    <form id="malware-form">
-        <div class="mb-4">
-            <label for="hash" class="form-label">
-                <i class="fas fa-fingerprint"></i> DIGITAL SIGNATURE
-            </label>
-            <input type="text" class="form-control" id="hash" name="hash" 
-                   placeholder="Enter file hash identifier" required>
-        </div>
+    <!-- Selection Buttons -->
+    <div class="mb-4 text-center">
+        <button class="btn btn-primary me-3" onclick="showHashForm()">Enter Hash Code</button>
+        <button class="btn btn-secondary" onclick="showFileUploadForm()">Upload File</button>
+    </div>
 
-        <div class="mb-5">
-            <label for="time" class="form-label">
-                <i class="fas fa-clock"></i> TEMPORAL MARKER
-            </label>
-            <input type="text" class="form-control" id="time" name="time" 
-                   placeholder="Enter temporal signature" required>
-        </div>
+    <!-- Hash Form -->
+    <div id="hashForm" style="display: block;">
+        <h3>Enter Hash Code and Timestamp</h3>
+        <form id="malware-form">
+            <div class="mb-4">
+                <label for="hash" class="form-label">
+                    <i class="fas fa-fingerprint"></i> DIGITAL SIGNATURE
+                </label>
+                <input type="text" class="form-control" id="hash" name="hash" placeholder="Enter file hash identifier" required>
+            </div>
 
-        <div class="d-grid">
-            <button type="button" class="btn btn-predict" onclick="predictMalware()">
-                <i class="fas fa-radar"></i> ANALYZE THREAT PROFILE
-            </button>
-        </div>
-    </form>
+            <div class="mb-5">
+                <label for="time" class="form-label">
+                    <i class="fas fa-clock"></i> TEMPORAL MARKER
+                </label>
+                <input type="text" class="form-control" id="time" name="time" placeholder="Enter temporal signature" required>
+            </div>
+
+            <div class="d-grid">
+                <button type="button" class="btn btn-predict" onclick="predictMalware()">
+                    <i class="fas fa-radar"></i> ANALYZE THREAT PROFILE
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- File Upload Form -->
+    <div id="fileUploadForm" style="display: none;">
+        <h3>Upload a File for Malware Check</h3>
+        <form action="/upload/file" method="post" enctype="multipart/form-data">
+            <div class="mb-4">
+                <label for="file" class="form-label">
+                    <i class="fas fa-upload"></i> SELECT FILE
+                </label>
+                <input type="file" name="file" id="file" class="form-control" required>
+            </div>
+            <div class="d-grid">
+                <button type="submit" class="btn btn-secondary">
+                    <i class="fas fa-file-import"></i> UPLOAD AND CHECK
+                </button>
+            </div>
+        </form>
+    </div>
+
 
     <div id="result" class="text-center mt-5"></div>
 </div>
@@ -454,6 +480,16 @@
                     'rgba(255, 62, 62, 0.3)' : 'rgba(78, 255, 138, 0.3)';
             }, 1500);
         });
+    }
+
+    function showHashForm() {
+        document.getElementById("hashForm").style.display = "block";
+        document.getElementById("fileUploadForm").style.display = "none";
+    }
+
+    function showFileUploadForm() {
+        document.getElementById("hashForm").style.display = "none";
+        document.getElementById("fileUploadForm").style.display = "block";
     }
 </script>
 
