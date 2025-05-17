@@ -344,12 +344,12 @@
         {% if is_admin %}
         <ul class="navbar-nav flex-row gap-4">
             <li class="nav-item">
-                <a class="nav-link text-white" href="/all_users">
+                <a class="nav-link text-white" href="/{{ username }}/all_users">
                     <i class="fas fa-user-shield"></i> Admin Panel
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-white" href="/view">
+                <a class="nav-link text-white" href="/{{ username }}/view">
                     <i class="fas fa-database"></i> Threat Database
                 </a>
             </li>
@@ -371,7 +371,7 @@
     
     <!-- View History Button -->
     <div class="d-flex justify-content-end mb-4">
-        <a href="/history" class="btn btn-outline-custom">
+        <a href="/{{ username }}/history" class="btn btn-outline-custom">
             <i class="fas fa-history"></i> Access Archives
         </a>
     </div>

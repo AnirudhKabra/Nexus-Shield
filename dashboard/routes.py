@@ -3,11 +3,15 @@ import sqlite3
 import joblib
 from . import dashboard
 
-@dashboard.route('/scan')
-def scan():
+@dashboard.route('/<username>/scan')
+def scan(username):
     """Main dashboard page after login."""
     if 'username' not in session:
         return redirect(url_for('auth.login'))
+    
+    if session['username'] != username:
+        return "Unauthorized access", 403
+
     return render_template('index.html', username=session['username'], is_admin=session.get('is_admin', 0))
 
 
@@ -58,14 +62,17 @@ def predict():
 
     return jsonify({"prediction": label})
 
-@dashboard.route('/history')
-def user_history():
+@dashboard.route('/<username>/history')
+def user_history(username):
     if 'username' not in session:
         return redirect(url_for('auth.login'))
 
+    if session['username'] != username:
+        return "Unauthorized access", 403
+
     conn = sqlite3.connect(current_app.config["DB_NAME"])
     c = conn.cursor()
-    c.execute("SELECT id FROM users WHERE username = ?", (session['username'],))
+    c.execute("SELECT id FROM users WHERE username = ?", (username,))
     user = c.fetchone()
     if not user:
         return "User not found", 404
@@ -75,16 +82,20 @@ def user_history():
     history = c.fetchall()
     conn.close()
 
-    return render_template('history.html', history=history, username=session['username'])
+    return render_template('history.html', history=history, username=username)
 
 
-@dashboard.route('/all', methods=['GET'])
-def get_all_predictions():
-    """API endpoint to retrieve all predictions from the database."""
+
+@dashboard.route('/<username>/all', methods=['GET'])
+def get_all_predictions(username):
+    """API endpoint to retrieve all predictions (admin only)."""
+
+    if 'username' not in session or session['username'] != username:
+        return "Unauthorized access", 403
 
     if not session.get('is_admin'):
         return "Access denied: Admins only", 403
-    
+
     conn = sqlite3.connect(current_app.config["DB_NAME"])
     c = conn.cursor()
     c.execute('''
@@ -97,16 +108,20 @@ def get_all_predictions():
     conn.close()
     return jsonify(rows)
 
-@dashboard.route('/view', methods=['GET'])
-def view_predictions_page():
+@dashboard.route('/<username>/view', methods=['GET'])
+def view_predictions_page(username):
     """Admin-only page to view all predictions."""
     if not session.get('is_admin'):
         return "Access denied: Admins only", 403
-    return render_template('all_predictions.html')
 
-@dashboard.route('/all_users')
-def all_users():
+    return render_template('all_predictions.html', username=username)
+
+@dashboard.route('/<username>/all_users')
+def all_users(username):
     """Admin-only page to view all registered users."""
+    if 'username' not in session or session['username'] != username:
+        return "Unauthorized access", 403
+
     if not session.get('is_admin'):
         return "Access denied: Admins only", 403
 
@@ -116,4 +131,5 @@ def all_users():
     users = c.fetchall()
     conn.close()
 
-    return render_template('all_users.html', users=users)
+    return render_template('all_users.html', users=users, username=username)
+

@@ -18,7 +18,7 @@ def login():
         if user and check_password_hash(user[2], password):  
             session['username'] = username
             session['is_admin'] = user[3]
-            return redirect(url_for('dashboard.scan'))
+            return redirect(url_for('dashboard.scan', username=username))
         return "Invalid credentials"
 
     return render_template('login.html')

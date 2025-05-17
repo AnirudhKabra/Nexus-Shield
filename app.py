@@ -14,8 +14,8 @@ init_db(app.config['DB_NAME'])
 app.register_blueprint(auth)
 app.register_blueprint(dashboard)
 
-for rule in app.url_map.iter_rules():
-    print(rule.endpoint, rule)
+# for rule in app.url_map.iter_rules():
+#     print(rule.endpoint, rule)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)

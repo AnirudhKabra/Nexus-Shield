@@ -363,7 +363,7 @@
         <i class="fas fa-shield-alt"></i> NEXUS SHIELD
     </a>
     <div class="ms-auto">
-        <a href="/scan" class="btn-back">
+        <a href="/{{ username }}/scan" class="btn-back">
             <i class="fas fa-arrow-left"></i> Return to Command Center
         </a>
     </div>
@@ -434,7 +434,7 @@
                 </tr>
             `;
             
-            const response = await fetch('/all');
+            const response = await fetch('/{{username}}/all');
             const data = await response.json();
             const tbody = document.getElementById('predictionsTableBody');
             tbody.innerHTML = '';
