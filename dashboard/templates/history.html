@@ -328,11 +328,11 @@
                 <tbody>
                     {% for row in history %}
                     <tr>
-                        <td>{{ row[0] }}</td>
-                        <td>{{ row[1] }}</td>
-                        <td>{{ row[2] }}</td>
+                        <td>{{ row['id'] }}</td>
+                        <td>{{ row['time'] }}</td>
+                        <td>{{ row['hash_value'] }}</td>
                         <td>
-                            {% if "malware" in row[3]|lower %}
+                            {% if "malware" in row['prediction']|lower %}
                             <span class="status-icon status-malware">
                                 <i class="fas fa-exclamation-triangle"></i>
                             </span>
@@ -341,7 +341,7 @@
                                 <i class="fas fa-shield-check"></i>
                             </span>
                             {% endif %}
-                            {{ row[3] }}
+                            {{ row['prediction'] }}
                         </td>
                     </tr>
                     {% endfor %}

@@ -99,7 +99,7 @@ def get_all_predictions(username):
             'prediction': r.prediction
         })
 
-    print(results)
+    # print(results)
 
     return jsonify(results)
 

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Threat Analytics | Nexus Shield</title>
@@ -7,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;700&family=Roboto+Mono:wght@400;500&display=swap');
-        
+
         :root {
             --primary: #00f7ff;
             --secondary: #0059ff;
@@ -21,10 +22,10 @@
             --table-bg: rgba(6, 16, 32, 0.6);
             --table-row-hover: rgba(0, 247, 255, 0.1);
         }
-        
+
         body {
             background-color: var(--dark);
-            background-image: 
+            background-image:
                 radial-gradient(circle at 25% 25%, rgba(0, 247, 255, 0.1) 0%, transparent 40%),
                 radial-gradient(circle at 75% 75%, rgba(255, 0, 230, 0.1) 0%, transparent 40%);
             min-height: 100vh;
@@ -35,7 +36,7 @@
             position: relative;
             overflow-x: hidden;
         }
-        
+
         body::before {
             content: "";
             position: fixed;
@@ -47,7 +48,7 @@
             pointer-events: none;
             z-index: -1;
         }
-        
+
         .navbar {
             background: rgba(10, 14, 23, 0.9) !important;
             border-bottom: 1px solid var(--primary);
@@ -55,7 +56,7 @@
             backdrop-filter: blur(10px);
             box-shadow: 0 5px 20px rgba(0, 247, 255, 0.15);
         }
-        
+
         .navbar-brand {
             font-family: 'Orbitron', sans-serif;
             letter-spacing: 1px;
@@ -65,34 +66,34 @@
             align-items: center;
             transition: all 0.3s;
         }
-        
+
         .navbar-brand:hover {
             text-shadow: 0 0 8px var(--primary);
             transform: translateX(-5px);
         }
-        
+
         .navbar-brand i {
             margin-right: 8px;
             font-size: 1.2rem;
         }
-        
+
         .container {
             max-width: 1200px;
             padding: 40px 20px;
         }
-        
+
         .table-container {
             background: var(--terminal-bg);
             padding: 40px;
             border-radius: 16px;
             box-shadow: 0 0 40px rgba(0, 247, 255, 0.15),
-                        inset 0 0 3px var(--primary);
+                inset 0 0 3px var(--primary);
             border: 1px solid rgba(0, 247, 255, 0.3);
             position: relative;
             overflow: hidden;
             transition: transform 0.3s;
         }
-        
+
         .table-container::before {
             content: "";
             position: absolute;
@@ -103,7 +104,7 @@
             background: linear-gradient(90deg, var(--primary), var(--accent), var(--primary));
             z-index: 1;
         }
-        
+
         .scan-line {
             position: absolute;
             top: 0;
@@ -117,10 +118,15 @@
         }
 
         @keyframes scanline {
-            0% { transform: translateY(-100%); }
-            100% { transform: translateY(850px); }
+            0% {
+                transform: translateY(-100%);
+            }
+
+            100% {
+                transform: translateY(850px);
+            }
         }
-        
+
         h2 {
             font-family: 'Orbitron', sans-serif;
             font-weight: 700;
@@ -131,7 +137,7 @@
             text-align: center;
             margin-bottom: 0;
         }
-        
+
         .title-bar {
             display: flex;
             align-items: center;
@@ -140,7 +146,7 @@
             position: relative;
             padding-bottom: 15px;
         }
-        
+
         .title-bar::after {
             content: "";
             position: absolute;
@@ -151,7 +157,7 @@
             background: linear-gradient(90deg, transparent, var(--primary), transparent);
             transform: translateX(-50%);
         }
-        
+
         .icon {
             font-size: 2.5rem;
             color: var(--primary);
@@ -159,13 +165,24 @@
             text-shadow: 0 0 10px var(--primary);
             animation: pulse 2s infinite;
         }
-        
+
         @keyframes pulse {
-            0% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.1); opacity: 0.8; }
-            100% { transform: scale(1); opacity: 1; }
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(1.1);
+                opacity: 0.8;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
         }
-        
+
         .table {
             border: 1px solid rgba(0, 247, 255, 0.2);
             border-radius: 12px;
@@ -176,7 +193,7 @@
             backdrop-filter: blur(10px);
             box-shadow: 0 0 30px rgba(0, 0, 0, 0.3), inset 0 0 1px var(--primary);
         }
-        
+
         .table thead {
             background: linear-gradient(90deg, rgba(3, 14, 27, 0.95), rgba(6, 16, 32, 0.9));
             color: var(--primary);
@@ -186,7 +203,7 @@
             font-size: 0.85rem;
             border-bottom: 2px solid rgba(0, 247, 255, 0.3);
         }
-        
+
         .table th {
             border-color: transparent;
             padding: 15px;
@@ -196,7 +213,7 @@
             position: relative;
             overflow: hidden;
         }
-        
+
         .table th::after {
             content: "";
             position: absolute;
@@ -206,12 +223,12 @@
             height: 1px;
             background: linear-gradient(90deg, transparent, var(--primary), transparent);
         }
-        
+
         .table th i {
             color: var(--primary);
             margin-right: 5px;
         }
-        
+
         .table td {
             border-color: rgba(0, 247, 255, 0.05);
             padding: 15px;
@@ -219,18 +236,18 @@
             font-size: 0.9rem;
             vertical-align: middle;
         }
-        
+
         .table tbody tr {
             background-color: transparent;
             position: relative;
             transition: all 0.3s;
             border-bottom: 1px solid rgba(0, 247, 255, 0.05);
         }
-        
+
         .table tbody tr:last-child {
             border-bottom: none;
         }
-        
+
         .table tbody tr::before {
             /* content: ""; */
             /* position: absolute;
@@ -241,33 +258,33 @@
             background: transparent;
             transition: all 0.3s; */
         }
-        
+
         .table tbody tr:hover {
             background: transparent;
             transform: translateX(5px);
         }
-        
+
         .table tbody tr:hover::before {
             background: var(--primary);
             box-shadow: 0 0 15px var(--primary);
         }
-        
+
         .table tr:nth-child(odd) {
             background-color: rgba(0, 40, 60, 0.08);
         }
-        
+
         .prediction-clean {
             color: var(--success);
             text-shadow: 0 0 10px var(--success);
             font-weight: 500;
         }
-        
+
         .prediction-malware {
             color: var(--danger);
             text-shadow: 0 0 10px var(--danger);
             font-weight: 500;
         }
-        
+
         .hash-cell {
             font-family: 'Roboto Mono', monospace;
             max-width: 150px;
@@ -275,7 +292,7 @@
             text-overflow: ellipsis;
             white-space: nowrap;
         }
-        
+
         .btn-back {
             color: var(--primary);
             border: 1px solid var(--primary);
@@ -289,23 +306,23 @@
             align-items: center;
             margin-top: 20px;
         }
-        
+
         .btn-back i {
             margin-right: 8px;
         }
-        
+
         .btn-back:hover {
             background-color: var(--primary);
             color: var(--dark);
             box-shadow: 0 0 15px rgba(0, 247, 255, 0.4);
         }
-        
+
         .stats-bar {
             display: flex;
             justify-content: space-between;
             margin-bottom: 20px;
         }
-        
+
         .stats-item {
             background: rgba(10, 18, 30, 0.7);
             border: 1px solid rgba(0, 247, 255, 0.3);
@@ -318,27 +335,27 @@
             min-width: 150px;
             justify-content: center;
         }
-        
+
         .stats-item i {
             margin-right: 8px;
             color: var(--primary);
         }
-        
+
         @media (max-width: 767px) {
             .stats-bar {
                 flex-direction: column;
                 gap: 10px;
             }
-            
+
             .stats-item {
                 width: 100%;
             }
-            
+
             .table-container {
                 padding: 20px 10px;
             }
         }
-        
+
         .data-loading {
             text-align: center;
             padding: 40px 0;
@@ -346,165 +363,177 @@
             color: var(--primary);
             animation: blink 1.5s infinite;
         }
-        
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
 
-        
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+        }
     </style>
 </head>
+
 <body>
 
-<!-- Top Navbar -->
-<nav class="navbar navbar-expand-lg navbar-dark px-4">
-    <a class="navbar-brand" href="/">
-        <i class="fas fa-shield-alt"></i> NEXUS SHIELD
-    </a>
-    <div class="ms-auto">
-        <a href="/{{ username }}/scan" class="btn-back">
-            <i class="fas fa-arrow-left"></i> Return to Command Center
+    <!-- Top Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark px-4">
+        <a class="navbar-brand" href="/">
+            <i class="fas fa-shield-alt"></i> NEXUS SHIELD
         </a>
-    </div>
-</nav>
-
-<div class="container">
-    <div class="table-container">
-        <div class="scan-line"></div>
-        
-        <div class="title-bar">
-            <i class="fas fa-biohazard icon"></i>
-            <h2>THREAT INTELLIGENCE DATABASE</h2>
-        </div>
-        
-        <div class="stats-bar">
-            <div class="stats-item">
-                <i class="fas fa-database"></i>
-                <span id="totalEntries">0 ENTRIES</span>
-            </div>
-            <div class="stats-item">
-                <i class="fas fa-virus"></i>
-                <span id="malwareCount">0 THREATS</span>
-            </div>
-            <div class="stats-item">
-                <i class="fas fa-shield-check"></i>
-                <span id="cleanCount">0 CLEAN</span>
-            </div>
-        </div>
-        
-        <div class="table-responsive">
-            <table class="table table-borderless table-hover align-middle text-center">
-                <thead>
-                    <tr>
-                        <th><i class="fas fa-fingerprint"></i> ID</th>
-                        <th><i class="fas fa-user-shield"></i> USER</th>
-                        <th><i class="fas fa-hashtag"></i> SIGNATURE</th>
-                        <th><i class="fas fa-clock"></i> TIMESTAMP</th>
-                        <th><i class="fas fa-ruler"></i> LENGTH</th>
-                        <th><i class="fas fa-brain"></i> ANALYSIS</th>
-                    </tr>
-                </thead>
-                <tbody id="predictionsTableBody">
-                    <tr>
-                        <td colspan="6" class="data-loading">
-                            <i class="fas fa-spinner fa-spin me-2"></i> INITIALIZING DATABASE CONNECTION...
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        
-        <div class="d-flex justify-content-end mt-4">
-            <a href="javascript:void(0)" onclick="fetchPredictions()" class="btn-back">
-                <i class="fas fa-sync"></i> Refresh Data
+        <div class="ms-auto">
+            <a href="/{{ username }}/scan" class="btn-back">
+                <i class="fas fa-arrow-left"></i> Return to Command Center
             </a>
         </div>
-    </div>
-</div>
+    </nav>
 
-<script>
-    async function fetchPredictions() {
-        try {
-            document.getElementById('predictionsTableBody').innerHTML = `
+    <div class="container">
+        <div class="table-container">
+            <div class="scan-line"></div>
+
+            <div class="title-bar">
+                <i class="fas fa-biohazard icon"></i>
+                <h2>THREAT INTELLIGENCE DATABASE</h2>
+            </div>
+
+            <div class="stats-bar">
+                <div class="stats-item">
+                    <i class="fas fa-database"></i>
+                    <span id="totalEntries">0 ENTRIES</span>
+                </div>
+                <div class="stats-item">
+                    <i class="fas fa-virus"></i>
+                    <span id="malwareCount">0 THREATS</span>
+                </div>
+                <div class="stats-item">
+                    <i class="fas fa-shield-check"></i>
+                    <span id="cleanCount">0 CLEAN</span>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-borderless table-hover align-middle text-center">
+                    <thead>
+                        <tr>
+                            <th><i class="fas fa-fingerprint"></i> ID</th>
+                            <th><i class="fas fa-user-shield"></i> USER</th>
+                            <th><i class="fas fa-hashtag"></i> SIGNATURE</th>
+                            <th><i class="fas fa-clock"></i> TIMESTAMP</th>
+                            <th><i class="fas fa-ruler"></i> LENGTH</th>
+                            <th><i class="fas fa-brain"></i> ANALYSIS</th>
+                        </tr>
+                    </thead>
+                    <tbody id="predictionsTableBody">
+                        <tr>
+                            <td colspan="6" class="data-loading">
+                                <i class="fas fa-spinner fa-spin me-2"></i> INITIALIZING DATABASE CONNECTION...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="d-flex justify-content-end mt-4">
+                <a href="javascript:void(0)" onclick="fetchPredictions()" class="btn-back">
+                    <i class="fas fa-sync"></i> Refresh Data
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function fetchPredictions() {
+            try {
+                document.getElementById('predictionsTableBody').innerHTML = `
                 <tr>
                     <td colspan="6" class="data-loading">
                         <i class="fas fa-spinner fa-spin me-2"></i> ANALYZING DATABASE...
                     </td>
                 </tr>
             `;
-            
-            const response = await fetch('/{{username}}/all');
-            const data = await response.json();
-            const tbody = document.getElementById('predictionsTableBody');
-            tbody.innerHTML = '';
-            
-            let malwareCount = 0;
-            let cleanCount = 0;
 
-            data.forEach(row => {
-                const tr = document.createElement('tr');
-                
-                // ID cell
-                const idCell = document.createElement('td');
-                idCell.textContent = row[0];
-                tr.appendChild(idCell);
-                
-                // User cell
-                const userCell = document.createElement('td');
-                userCell.textContent = row[1];
-                tr.appendChild(userCell);
-                
-                // Hash cell with truncation
-                const hashCell = document.createElement('td');
-                hashCell.className = 'hash-cell';
-                hashCell.textContent = row[2];
-                hashCell.title = row[2]; // full hash on hover
-                tr.appendChild(hashCell);
-                
-                // Time cell
-                const timeCell = document.createElement('td');
-                timeCell.textContent = row[3];
-                tr.appendChild(timeCell);
-                
-                // Length cell
-                const lengthCell = document.createElement('td');
-                lengthCell.textContent = row[4];
-                tr.appendChild(lengthCell);
-                
-                // Prediction cell with styling
-                const predictionCell = document.createElement('td');
-                if (row[5].toLowerCase().includes('malware')) {
-                    predictionCell.innerHTML = `<i class="fas fa-exclamation-triangle me-2"></i> <span class="prediction-malware">${row[5]}</span>`;
-                    malwareCount++;
-                } else {
-                    predictionCell.innerHTML = `<i class="fas fa-check-circle me-2"></i> <span class="prediction-clean">${row[5]}</span>`;
-                    cleanCount++;
-                }
-                tr.appendChild(predictionCell);
-                
-                tbody.appendChild(tr);
-            });
-            
-            // Update statistics
-            document.getElementById('totalEntries').textContent = `${data.length} ENTRIES`;
-            document.getElementById('malwareCount').textContent = `${malwareCount} THREATS`;
-            document.getElementById('cleanCount').textContent = `${cleanCount} CLEAN`;
-            
-        } catch (error) {
-            document.getElementById('predictionsTableBody').innerHTML = `
+                const response = await fetch('/{{username}}/all');
+                const data = await response.json();
+                const tbody = document.getElementById('predictionsTableBody');
+                tbody.innerHTML = '';
+
+                let malwareCount = 0;
+                let cleanCount = 0;
+
+                data.forEach(result => {
+
+
+                    const tr = document.createElement('tr');
+
+                    // ID cell
+                    const idCell = document.createElement('td');
+                    idCell.textContent = result.id
+                    tr.appendChild(idCell);
+
+                    // User cell
+                    const userCell = document.createElement('td');
+                    userCell.textContent = result.username
+                    tr.appendChild(userCell);
+
+                    // Hash cell with truncation
+                    const hashCell = document.createElement('td');
+                    hashCell.className = 'hash-cell';
+                    hashCell.textContent = result.hash_value
+                    hashCell.title = result[2]; // full hash on hover
+                    tr.appendChild(hashCell);
+
+                    // Time cell
+                    const timeCell = document.createElement('td');
+                    timeCell.textContent = result.time
+                    tr.appendChild(timeCell);
+
+                    // Length cell
+                    const lengthCell = document.createElement('td');
+                    lengthCell.textContent = result.hash_len
+                    tr.appendChild(lengthCell);
+
+                    // Prediction cell with styling
+                    const predictionCell = document.createElement('td');
+
+
+
+                    if (result.prediction.toLowerCase().includes('malware')) {
+                        predictionCell.innerHTML = `<i class="fas fa-exclamation-triangle me-2"></i> <span class="prediction-malware">${result.prediction}</span>`;
+                        malwareCount++;
+                    } else {
+                        predictionCell.innerHTML = `<i class="fas fa-check-circle me-2"></i> <span class="prediction-clean">${result.prediction}</span>`;
+                        cleanCount++;
+                    }
+                    tr.appendChild(predictionCell);
+
+                    tbody.appendChild(tr);
+                });
+
+                // Update statistics
+                document.getElementById('totalEntries').textContent = `${data.length} ENTRIES`;
+                document.getElementById('malwareCount').textContent = `${malwareCount} THREATS`;
+                document.getElementById('cleanCount').textContent = `${cleanCount} CLEAN`;
+
+            } catch (error) {
+                document.getElementById('predictionsTableBody').innerHTML = `
                 <tr>
                     <td colspan="6" class="text-center text-danger">
                         <i class="fas fa-exclamation-circle me-2"></i> CONNECTION ERROR: UNABLE TO ACCESS DATABASE
                     </td>
                 </tr>
             `;
-            console.error('Failed to load predictions:', error);
+                console.error('Failed to load predictions:', error);
+            }
         }
-    }
 
-    window.onload = fetchPredictions;
-</script>
+        window.onload = fetchPredictions;
+    </script>
 
 </body>
+
 </html>
