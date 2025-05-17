@@ -1,7 +1,8 @@
-from flask import render_template, request, redirect, url_for, session, current_app
+from flask import render_template, request, redirect, url_for, session
 from werkzeug.security import generate_password_hash, check_password_hash
-import sqlite3
+from sqlalchemy.exc import IntegrityError
 from . import auth
+from db import User, db  
 
 @auth.route('/', methods=['GET', 'POST'])
 def login():
@@ -9,19 +10,17 @@ def login():
         username = request.form['username']
         password = request.form['password']
 
-        conn = sqlite3.connect(current_app.config["DB_NAME"])
-        c = conn.cursor()
-        c.execute("SELECT * FROM users WHERE username = ?", (username,))
-        user = c.fetchone()
-        conn.close()
+        user = User.query.filter_by(username=username).first()
 
-        if user and check_password_hash(user[2], password):  
-            session['username'] = username
-            session['is_admin'] = user[3]
-            return redirect(url_for('dashboard.scan', username=username))
+        if user and check_password_hash(user.password, password):
+            session['username'] = user.username
+            session['is_admin'] = user.is_admin
+            return redirect(url_for('dashboard.scan', username=user.username))
+
         return "Invalid credentials"
 
     return render_template('login.html')
+
 
 @auth.route('/signup', methods=['GET', 'POST'])
 def signup():
@@ -30,18 +29,19 @@ def signup():
         password = request.form['password']
         hashed_password = generate_password_hash(password)
 
-        conn = sqlite3.connect(current_app.config["DB_NAME"])
-        c = conn.cursor()
+        new_user = User(username=username, password=hashed_password)
+
         try:
-            c.execute("INSERT INTO users (username, password) VALUES (?, ?)", (username, hashed_password))
-            conn.commit()
-        except sqlite3.IntegrityError:
-            conn.close()
+            db.session.add(new_user)
+            db.session.commit()
+        except IntegrityError:
+            db.session.rollback()
             return "Username already exists"
-        conn.close()
+
         return redirect(url_for('auth.login'))
 
     return render_template('signup.html')
+
 
 @auth.route('/logout')
 def logout():
