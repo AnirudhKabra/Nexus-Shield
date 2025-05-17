@@ -1,5 +1,8 @@
-
 class Config:
-    DB_NAME = 'malware_predictions.db'
+    DB_NAME = 'prod.db'
+    SQLALCHEMY_DATABASE_URI = f'sqlite:///{DB_NAME}'
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    ADMIN_USERNAME = 'admin'
+    ADMIN_PASSWORD = 'admin123'
+    SECRET_KEY = "AnirudhKabra"
     MODEL_PATH = 'malware_model.pkl'
-    SECRET_KEY = 'super_secret_key'

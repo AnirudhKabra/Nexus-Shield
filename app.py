@@ -1,19 +1,24 @@
 from flask import Flask
-from db import init_db
+from db import db, init_db
 from auth import auth
 from dashboard import dashboard
 from config import Config
 
 app = Flask(__name__)
 app.config.from_object(Config)
+app.secret_key = app.config['SECRET_KEY']
 
-# Initialize the database
-init_db(app.config['DB_NAME'])
+# Initialize SQLAlchemy with the Flask app
+db.init_app(app)
+
+# Initialize the database and default admin user
+init_db(app)
 
 # Register blueprints
 app.register_blueprint(auth)
 app.register_blueprint(dashboard)
 
+# Optional: print all routes
 # for rule in app.url_map.iter_rules():
 #     print(rule.endpoint, rule)
 

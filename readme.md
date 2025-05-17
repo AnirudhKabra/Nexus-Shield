@@ -1,6 +1,10 @@
-# 🛡️ Malware Detection Web App
+# 🛡️ Malware Detection Web App 
 
 Just Timepass and learning
+
+---
+
+## https://nexus-shield.onrender.com/
 
 ---
 
@@ -8,10 +12,7 @@ Just Timepass and learning
 
 - **Frontend**: HTML, CSS, JavaScript
 - **Backend**: Flask (Python)
-- **Database**: Sqlite*
-
-## 🛠️ Applying SqlAlchemy (In-Preogress)
-
+- **Database**: SqlAlchemy
 
 ## System Requirements
 

@@ -1,3 +1,4 @@
 joblib
 flask
 scikit-learn
+flask_sqlalchemy

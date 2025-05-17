@@ -1,23 +1,19 @@
 from flask import render_template, request, jsonify, session, redirect, url_for, current_app
-import sqlite3
 import joblib
+from sqlalchemy.exc import SQLAlchemyError
 from . import dashboard
+from db import User, Prediction, db 
 
 @dashboard.route('/<username>/scan')
 def scan(username):
-    """Main dashboard page after login."""
     if 'username' not in session:
         return redirect(url_for('auth.login'))
-    
-    if session['username'] != username:
-        return "Unauthorized access", 403
 
     return render_template('index.html', username=session['username'], is_admin=session.get('is_admin', 0))
 
 
 @dashboard.route('/predict', methods=['POST'])
 def predict():
-    """API endpoint to predict whether a file is malware based on hash length and time."""
     if 'username' not in session:
         return jsonify({"error": "Unauthorized"}), 401
 
@@ -38,98 +34,89 @@ def predict():
         return jsonify({"error": str(e)}), 500
 
     try:
-        conn = sqlite3.connect(current_app.config["DB_NAME"])
-        c = conn.cursor()
-
-        # Fetch user_id from session username
-        c.execute("SELECT id FROM users WHERE username = ?", (session['username'],))
-        user = c.fetchone()
-        user_id = user[0] if user else None
-
-        if not user_id:
+        user = User.query.filter_by(username=session['username']).first()
+        if not user:
             return jsonify({"error": "User not found"}), 400
 
-        # Save prediction with user_id
-        c.execute(
-            "INSERT INTO predictions (user_id, hash_value, time, hash_len, prediction) VALUES (?, ?, ?, ?, ?)",
-            (user_id, hash_value, time, hash_len, label)
+        new_prediction = Prediction(
+            user_id=user.id,
+            hash_value=hash_value,
+            time=time,
+            hash_len=hash_len,
+            prediction=label
         )
-
-        conn.commit()
-        conn.close()
-    except Exception as e:
-        return jsonify({"error": f"Database error: {e}"}), 500
+        db.session.add(new_prediction)
+        db.session.commit()
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        return jsonify({"error": f"Database error: {str(e)}"}), 500
 
     return jsonify({"prediction": label})
+
 
 @dashboard.route('/<username>/history')
 def user_history(username):
     if 'username' not in session:
         return redirect(url_for('auth.login'))
 
-    if session['username'] != username:
-        return "Unauthorized access", 403
-
-    conn = sqlite3.connect(current_app.config["DB_NAME"])
-    c = conn.cursor()
-    c.execute("SELECT id FROM users WHERE username = ?", (username,))
-    user = c.fetchone()
+    user = User.query.filter_by(username=username).first()
     if not user:
         return "User not found", 404
 
-    user_id = user[0]
-    c.execute("SELECT hash_value, time, hash_len, prediction FROM predictions WHERE user_id = ?", (user_id,))
-    history = c.fetchall()
-    conn.close()
+    history = Prediction.query.filter_by(user_id=user.id).all()
+
+    # for item in history:
+    #     print(f"ID: {item.id}, Result: {item.prediction}")
+
 
     return render_template('history.html', history=history, username=username)
 
 
-
 @dashboard.route('/<username>/all', methods=['GET'])
 def get_all_predictions(username):
-    """API endpoint to retrieve all predictions (admin only)."""
-
     if 'username' not in session or session['username'] != username:
         return "Unauthorized access", 403
 
-    if not session.get('is_admin'):
-        return "Access denied: Admins only", 403
+    # Join predictions with users to get username along with prediction data
+    rows = db.session.query(
+        Prediction.id,
+        User.username,
+        Prediction.hash_value,
+        Prediction.time,
+        Prediction.hash_len,
+        Prediction.prediction
+    ).join(User, Prediction.user_id == User.id).all()
 
-    conn = sqlite3.connect(current_app.config["DB_NAME"])
-    c = conn.cursor()
-    c.execute('''
-    SELECT p.id, u.username, p.hash_value, p.time, p.hash_len, p.prediction
-    FROM predictions p
-    JOIN users u ON p.user_id = u.id
-    ''')
+    # Convert rows to list of dicts for JSON response
+    results = []
+    for r in rows:
+        results.append({
+            'id': r.id,
+            'username': r.username,
+            'hash_value': r.hash_value,
+            'time': r.time,
+            'hash_len': r.hash_len,
+            'prediction': r.prediction
+        })
 
-    rows = c.fetchall()
-    conn.close()
-    return jsonify(rows)
+    # print(results)
+
+    return jsonify(results)
+
 
 @dashboard.route('/<username>/view', methods=['GET'])
 def view_predictions_page(username):
-    """Admin-only page to view all predictions."""
     if not session.get('is_admin'):
         return "Access denied: Admins only", 403
 
     return render_template('all_predictions.html', username=username)
 
+
 @dashboard.route('/<username>/all_users')
 def all_users(username):
-    """Admin-only page to view all registered users."""
     if 'username' not in session or session['username'] != username:
         return "Unauthorized access", 403
 
-    if not session.get('is_admin'):
-        return "Access denied: Admins only", 403
-
-    conn = sqlite3.connect(current_app.config["DB_NAME"])
-    c = conn.cursor()
-    c.execute("SELECT id, username, is_admin FROM users")
-    users = c.fetchall()
-    conn.close()
+    users = User.query.with_entities(User.id, User.username, User.is_admin).all()
 
     return render_template('all_users.html', users=users, username=username)
-
