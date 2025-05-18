@@ -6,3 +6,4 @@ class Config:
     ADMIN_PASSWORD = 'admin123'
     SECRET_KEY = "AnirudhKabra"
     MODEL_PATH = 'malware_model.pkl'
+    SESSION_TIMEOUT = 30
