@@ -2,6 +2,7 @@ from flask import render_template, request, redirect, url_for, session
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.exc import IntegrityError
 from . import auth
+import time
 from db import User, db  
 
 @auth.route('/', methods=['GET', 'POST'])
@@ -15,6 +16,7 @@ def login():
         if user and check_password_hash(user.password, password):
             session['username'] = user.username
             session['is_admin'] = user.is_admin
+            session['last_active'] = time.time()
             return redirect(url_for('dashboard.scan', username=user.username))
 
         return "Invalid credentials"

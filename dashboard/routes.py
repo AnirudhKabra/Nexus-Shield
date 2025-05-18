@@ -2,7 +2,29 @@ from flask import render_template, request, jsonify, session, redirect, url_for,
 import joblib
 from sqlalchemy.exc import SQLAlchemyError
 from . import dashboard
+import time
 from db import User, Prediction, db 
+
+
+@dashboard.before_app_request
+def session_timeout_check():
+    # Skip timeout for login/signup/static
+    if request.endpoint in ['auth.login', 'auth.signup', 'static']:
+        return
+
+    if 'username' in session:
+        now = time.time()
+        last_active = session.get('last_active', now)
+
+        if now - last_active > current_app.config["SESSION_TIMEOUT"]:
+            session.clear()
+            # For JSON routes like /predict, return 401 instead of redirect
+            if request.is_json or request.path.startswith('/dashboard/predict'):
+                return jsonify({'error': 'Session expired'}), 401
+            return redirect(url_for('auth.login'))
+        else:
+            session['last_active'] = now
+
 
 @dashboard.route('/<username>/scan')
 def scan(username):
