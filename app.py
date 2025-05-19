@@ -1,7 +1,8 @@
 from flask import Flask
-from db import db, init_db
-from auth import auth
-from dashboard import dashboard
+from models import db
+from models.setup import init_db
+from controllers.auth import auth
+from controllers.dashboard import dashboard
 from config import Config
 
 app = Flask(__name__)
