@@ -3,7 +3,7 @@ import joblib
 from sqlalchemy.exc import SQLAlchemyError
 from . import dashboard
 import time
-from db import User, Prediction, db 
+from models import User, Prediction, db 
 
 
 @dashboard.before_app_request

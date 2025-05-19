@@ -3,7 +3,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.exc import IntegrityError
 from . import auth
 import time
-from db import User, db  
+from models import User, db  
 
 @auth.route('/', methods=['GET', 'POST'])
 def login():
